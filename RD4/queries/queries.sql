@@ -41,10 +41,10 @@ JOIN [Projects] ON [ProjectToAvg].[project_id] = [Projects].[project_id];
 -- 5) Подсчитать длительность выполнения каждого проекта
 
 -- Подсчет только по дням
-SELECT DATEDIFF(DAY, [project_start_date], [project_end_date]) FROM [Projects];
+SELECT DATEDIFF(DAY, [project_start_date], [project_end_date]) AS [days_spent_for_projects] FROM [Projects];
 
 -- Подсчет по дням + по годам
-SELECT CONCAT('Years:', [total_day_spent] / 365, ', Days:', [total_day_spent] % 365) FROM
+SELECT CONCAT('Years:', [total_day_spent] / 365, ', Days:', [total_day_spent] % 365) AS [days_spent_for_projects] FROM
 (SELECT DATEDIFF(DAY, [project_start_date], [project_end_date]) AS [total_day_spent] FROM [Projects]) AS [DaysSpent];
 
 -- 6) Определить сотрудников с минимальным количеством незакрытых задач
@@ -121,7 +121,11 @@ JOIN [Employees] ON [Employees].[employee_id] = [EmployeesWithMinNotClosedTasks]
 
 -- 8) Продлить дедлайн незакрытых задач на 5 дней
 
-
+UPDATE [TestUpdateQueryAs]
+SET [task_deadline] = DATEADD(DAY, DATEDIFF(DAY, 0, [task_deadline]), 5)
+FROM [TestUpdateQueryAs]
+JOIN [TaskState] ON [TestUpdateQueryAs].[state_id] = [TaskState].[state_id]
+WHERE [state_name] != 'Closed';
 
 -- 9) Посчитать на каждом проекте количество задач, к которым еще не приступили
 
@@ -138,6 +142,8 @@ JOIN [Projects] ON [AmmountOfNotStartedTasksInProject].[project_id] = [Projects]
 ORDER BY [ammount_of_not_started_tasks] DESC;
 
 -- 10) Перевести проекты в состояние закрыт, для которых все задачи закрыты и задать время закрытия временем закрытия задачи проекта, принятой последней
+
+
 
 -- 11) Выяснить по всем проектам, какие сотрудники на проекте не имеют незакрытых задач
 
