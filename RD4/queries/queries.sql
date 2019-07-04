@@ -92,9 +92,9 @@ SELECT [employee_id], COUNT([TaskState].[state_name]) AS [ammount_of_tasks] FROM
 JOIN [TasksToEmployees] ON [Tasks].[task_id] = [TasksToEmployees].[task_id]
 JOIN [TaskState] ON [Tasks].[state_id] = [TaskState].[state_id]
 WHERE [state_name] != 'Closed'
--- Here is right line of code below, but it returns an empty set, cuz all tasks still don't reach their deadline.
+-- Here is right line of code below, but it returns an empty set (03.07.19), cuz all tasks still don't reach their deadline.
 AND [task_deadline] < GETDATE()
--- So below is test query constraint
+-- So below is test query clause
 --AND [task_deadline] < convert(datetime2, '22-07-2019 10:25:00', 105)
 GROUP BY [employee_id]
 ) AS [StatesOfTasksForEmployees]
@@ -109,9 +109,9 @@ SELECT [employee_id], COUNT([TaskState].[state_name]) AS [ammount_of_tasks] FROM
 JOIN [TasksToEmployees] ON [Tasks].[task_id] = [TasksToEmployees].[task_id]
 JOIN [TaskState] ON [Tasks].[state_id] = [TaskState].[state_id]
 WHERE [state_name] != 'Closed'
--- Here is right line of code below, but it returns an empty set, cuz all tasks still don't reach their deadline.
+-- Here is right line of code below, but it returns an empty set (03.07.19), cuz all tasks still don't reach their deadline.
 AND [task_deadline] < GETDATE()
--- So below is test query constraint
+-- So below is test query clause
 --AND [task_deadline] < convert(datetime2, '22-07-2019 10:25:00', 105)
 GROUP BY [employee_id]
 ) AS [StatesOfTasksForEmployees]
@@ -141,6 +141,20 @@ ORDER BY [ammount_of_not_started_tasks] DESC;
 
 -- 11) Выяснить по всем проектам, какие сотрудники на проекте не имеют незакрытых задач
 
+SELECT [project_name], [employee_firstname], [employee_lastname] FROM
+(SELECT [project_id], [employee_id] FROM
+(
+-- Taking all set of tasks
+SELECT [task_id] FROM [Tasks]
 
+EXCEPT
+-- And substract from general set tasks with not closed state
+SELECT [task_id] FROM [Tasks]
+JOIN [TaskState] ON [Tasks].[state_id] = [TaskState].[state_id]
+WHERE [state_name] != 'Closed') AS [TableWithNoIdsOfNotClosedTasks]
+JOIN [TasksToEmployees] ON [TableWithNoIdsOfNotClosedTasks].[task_id] = [TasksToEmployees].[task_id]
+JOIN [Tasks] ON [Tasks].[task_id] = [TableWithNoIdsOfNotClosedTasks].[task_id]) AS [ProjectEmployeeIds]
+JOIN [Employees] ON [ProjectEmployeeIds].[employee_id] = [Employees].[employee_id]
+JOIN [Projects] ON [ProjectEmployeeIds].[project_id] = [Projects].[project_id];
 
 -- 12) Заданную задачу (по названию) проекта перевести на сотрудника с минимальным количеством выполняемых им задач
