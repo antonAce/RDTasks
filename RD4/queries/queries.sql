@@ -121,10 +121,10 @@ JOIN [Employees] ON [Employees].[employee_id] = [EmployeesWithMinNotClosedTasks]
 
 -- 8) Продлить дедлайн незакрытых задач на 5 дней
 
-UPDATE [TestUpdateQueryAs]
+UPDATE [Tasks]
 SET [task_deadline] = DATEADD(DAY, DATEDIFF(DAY, 0, [task_deadline]), 5)
-FROM [TestUpdateQueryAs]
-JOIN [TaskState] ON [TestUpdateQueryAs].[state_id] = [TaskState].[state_id]
+FROM [Tasks]
+JOIN [TaskState] ON [Tasks].[state_id] = [TaskState].[state_id]
 WHERE [state_name] != 'Closed';
 
 -- 9) Посчитать на каждом проекте количество задач, к которым еще не приступили
@@ -143,6 +143,30 @@ ORDER BY [ammount_of_not_started_tasks] DESC;
 
 -- 10) Перевести проекты в состояние закрыт, для которых все задачи закрыты и задать время закрытия временем закрытия задачи проекта, принятой последней
 
+UPDATE [Projects]
+SET [state_id] = 1
+FROM
+(SELECT [project_id] FROM (
+-- Query gets ids of projects with all closed tasks by comparing to the ammount of closed tasks to the ammount of all tasks
+-- And then gets the set of all projects where ammount of closed tasks equals to ammount of all tasks
+SELECT [TasksPerProject].[project_id], [ammount_of_tasks], [ammount_of_closed_tasks] FROM
+(SELECT [project_id], COUNT([state_id]) AS [ammount_of_tasks] FROM [Tasks]
+GROUP BY [project_id]) AS [TasksPerProject]
+
+LEFT JOIN -- Performed the left join cuz COUNT(all_tasks_proj_ids) > COUNT(closed_tasks_proj_ids) always, so we won't lose data
+
+(SELECT [project_id], COUNT([state_name]) AS [ammount_of_closed_tasks] FROM [Tasks]
+JOIN [TaskState] ON [Tasks].[state_id] = [TaskState].[state_id]
+WHERE [state_name] = 'Closed'
+GROUP BY [project_id]) AS [ClosedTasksPerProject]
+
+ON [TasksPerProject].[project_id] = [ClosedTasksPerProject].[project_id]
+) AS [Tasks_ammount_comparing] 
+WHERE [ammount_of_tasks] = [ammount_of_closed_tasks]) AS [IdsOfClosedProjects]
+JOIN [Projects] ON [IdsOfClosedProjects].[project_id] = [Projects].[project_id]
+JOIN [ProjectState] ON [Projects].[state_id] = [ProjectState].[state_id]
+
+WHERE [Projects].[project_id] = [IdsOfClosedProjects].[project_id];
 
 
 -- 11) Выяснить по всем проектам, какие сотрудники на проекте не имеют незакрытых задач
@@ -164,3 +188,4 @@ JOIN [Employees] ON [ProjectEmployeeIds].[employee_id] = [Employees].[employee_i
 JOIN [Projects] ON [ProjectEmployeeIds].[project_id] = [Projects].[project_id];
 
 -- 12) Заданную задачу (по названию) проекта перевести на сотрудника с минимальным количеством выполняемых им задач
+
