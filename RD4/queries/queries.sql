@@ -135,6 +135,7 @@ SELECT [project_name], [ammount_of_not_started_tasks] FROM
 (SELECT [Projects].[project_id], [Tasks].[state_id] FROM [Projects]
 JOIN [Tasks] ON [Projects].[project_id] = [Tasks].[project_id]) AS [TaskStateInProject]
 JOIN [TaskState] ON [TaskStateInProject].[state_id] = [TaskState].[state_id]
+-- Did you mean tasks that are not started yet are ''
 WHERE [TaskState].[state_name] = 'Open') AS [TaskStateInProjectFiltered]
 RIGHT JOIN [Projects] ON [TaskStateInProjectFiltered].[project_id] = [Projects].[project_id]
 GROUP BY [Projects].[project_id]) AS [AmmountOfNotStartedTasksInProject]
@@ -185,7 +186,43 @@ WHERE [state_name] != 'Closed') AS [TableWithNoIdsOfNotClosedTasks]
 JOIN [TasksToEmployees] ON [TableWithNoIdsOfNotClosedTasks].[task_id] = [TasksToEmployees].[task_id]
 JOIN [Tasks] ON [Tasks].[task_id] = [TableWithNoIdsOfNotClosedTasks].[task_id]) AS [ProjectEmployeeIds]
 JOIN [Employees] ON [ProjectEmployeeIds].[employee_id] = [Employees].[employee_id]
-JOIN [Projects] ON [ProjectEmployeeIds].[project_id] = [Projects].[project_id];
+JOIN [Projects] ON [ProjectEmployeeIds].[project_id] = [Projects].[project_id]
+ORDER BY [project_name];
 
 -- 12) Заданную задачу (по названию) проекта перевести на сотрудника с минимальным количеством выполняемых им задач
 
+
+GO
+
+-- Because the relation type between Tasks and Employees is 'Many-many', the only way to give a task is add column in TaskToEmployees
+-- And that is why we should check if the combination we want to add doesn't already exist, and we can't do it via a single query
+-- so the only option here is do it via procedure
+
+CREATE PROCEDURE AddTaskToEmployeeWithMinTasks
+@task_name VARCHAR(250)
+AS
+BEGIN
+	DECLARE @employee_id_with_min_tasks INT;
+	DECLARE @employee_id_with_min_tasks_position INT;
+	DECLARE @queried_task_id INT;
+	DECLARE @position_id INT;
+	DECLARE @does_employee_has_this_task INT;
+
+	SELECT @employee_id_with_min_tasks = (SELECT TOP(1) [employee_id] FROM [TasksToEmployees]
+	GROUP BY [employee_id]
+	ORDER BY COUNT([task_id]));
+
+	SELECT @queried_task_id = (SELECT TOP(1) [task_id] FROM [Tasks] WHERE [task_name] = @task_name);
+	SELECT @position_id = (SELECT TOP(1) [position_id] FROM [TasksToEmployees] WHERE [employee_id] = @employee_id_with_min_tasks);
+
+	SELECT @does_employee_has_this_task = (SELECT COUNT([employee_id]) FROM [TasksToEmployees]
+	JOIN [Tasks] ON [TasksToEmployees].[task_id] = [Tasks].[task_id]
+	WHERE [task_name] = @task_name
+	AND [employee_id] = @employee_id_with_min_tasks);
+
+	IF @does_employee_has_this_task <> 0
+	BEGIN
+		INSERT INTO [TasksToEmployees] (employee_id, task_id, position_id)
+		VALUES (@employee_id_with_min_tasks, @queried_task_id, @position_id);
+	END
+END;
