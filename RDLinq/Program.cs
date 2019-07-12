@@ -82,14 +82,20 @@ namespace ConsoleApplication8
             {
                 //LinqBegin6. Дана строковая последовательность.
                 //Найти сумму длин всех строк, входящих в данную последовательность.
-                //TODO
+
+                List<string> themessage4u = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
+                                                        "Hello", "there,", "old", "chum.", "I’m", "gnot", "an", "elf.",
+                                                        "I’m", "gnot", "a", "goblin.", "I’m", "a", "gnome.", "And", "you’ve", "been,", "GNOMED!" };
+                int lengthOfTheMessage = themessage4u.Sum(t => t.Length);
             }
 
             {
                 //LinqBegin11. Дана последовательность непустых строк. 
-                //Пполучить строку, состоящую из начальных символов всех строк исходной последовательности.
-                //TODO
-
+                //Получить строку, состоящую из начальных символов всех строк исходной последовательности.
+                List<string> themessage4u = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
+                                                        "Hello", "there,", "old", "chum.", "I’m", "gnot", "an", "elf.",
+                                                        "I’m", "gnot", "a", "goblin.", "I’m", "a", "gnome.", "And", "you’ve", "been,", "GNOMED!" };
+                var allFirstLetters = themessage4u.Select(x => x[0].ToString()).Aggregate((x, y) => x + y);
             }
 
             {
