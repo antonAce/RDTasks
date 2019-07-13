@@ -143,14 +143,22 @@ namespace RDLinq
                 //если соответствующая строка исходной последовательности имеет нечетную длину, то в качестве
                 //символа берется первый символ этой строки; в противном случае берется последний символ строки.
                 //Отсортировать полученные символы по убыванию их кодов.
-                //TODO
+                List<string> sequence = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
+                                                        "Hello", "there,", "old", "chum.", "I’m", "gnot", "an", "elf.",
+                                                        "I’m", "gnot", "a", "goblin.", "I’m", "a", "gnome.", "And", "you’ve", "been,", "GNOMED!" };
+
+                var res = sequence.Where(x => x.Length % 2 != 0).Select(x => x[0]).Concat(sequence.Where(x => x.Length % 2 == 0).Select(x => x[x.Length - 1])).OrderBy(x => (int)x);
             }
 
             {
                 //LinqBegin44. Даны целые числа K1 и K2 и целочисленные последовательности A и B.
                 //Получить последовательность, содержащую все числа из A, большие K1, и все числа из B, меньшие K2. 
                 //Отсортировать полученную последовательность по возрастанию.
-                //TODO
+                int K1 = 13, K2 = 45;
+                IEnumerable<int> A = new int[] { 96, 58, 71, 19, 63, 84, 70, 29, 46, 97, 57, 9, 44, 92, 8 };
+                IEnumerable<int> B = new int[] { 60, 11, 30, 88, 50, 7, 2, 47, 13, 35, 61, 5, 16, 79, 91 };
+
+                var res = A.Where(x => x > K1).Concat(B.Where(x => x < K2)).OrderBy(x => x);
             }
             {
                 //LinqBegin46. Даны последовательности положительных целых чисел A и B; все числа в каждой последовательности различны.
@@ -171,7 +179,10 @@ namespace RDLinq
                 //Представить найденное объединение в виде последовательности строк, содержащих первый и второй элементы пары, 
                 //разделенные двоеточием, например, «AB: CD». Порядок следования пар должен определяться порядком 
                 //первых элементов пар(по возрастанию), а для равных первых элементов — порядком вторых элементов пар(по убыванию).
-                //TODO
+                List<string> A = new List<string>() { "A09", "FVG", "DFWEF23", "WEFWE", "23423", "FRE", "254", "FWGGDFG", "26", "WEF"};
+                List<string> B = new List<string>() { "RFERF", "456TRE", "435Y43H45HR", "234WEG", "HREHTGF", "RTH", "456Y3", "RTGGGN", "3456RE", "3454" };
+
+                var res = A.Join(B, x => x.Length, y => y.Length, (x, y) => new { AB = x, CD = y }).OrderBy(x => x.AB).ThenByDescending(x => x.CD).Select(x => x.AB.ToString() + ": " + x.CD.ToString());
             }
 
             {
