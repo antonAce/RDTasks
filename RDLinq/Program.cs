@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ConsoleApplication8
+namespace RDLinq
 {
     class Film
     {
@@ -83,19 +83,19 @@ namespace ConsoleApplication8
                 //LinqBegin6. Дана строковая последовательность.
                 //Найти сумму длин всех строк, входящих в данную последовательность.
 
-                List<string> themessage4u = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
+                List<string> sequence = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
                                                         "Hello", "there,", "old", "chum.", "I’m", "gnot", "an", "elf.",
                                                         "I’m", "gnot", "a", "goblin.", "I’m", "a", "gnome.", "And", "you’ve", "been,", "GNOMED!" };
-                int lengthOfTheMessage = themessage4u.Sum(t => t.Length);
+                int lengthOfTheMessage = sequence.Sum(x => x.Length);
             }
 
             {
                 //LinqBegin11. Дана последовательность непустых строк. 
                 //Получить строку, состоящую из начальных символов всех строк исходной последовательности.
-                List<string> themessage4u = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
+                List<string> sequence = new List<string>() { "Ho", "ho", "ho", "ha", "ha,", "ho", "ho", "ho", "he", "ha.",
                                                         "Hello", "there,", "old", "chum.", "I’m", "gnot", "an", "elf.",
                                                         "I’m", "gnot", "a", "goblin.", "I’m", "a", "gnome.", "And", "you’ve", "been,", "GNOMED!" };
-                var allFirstLetters = themessage4u.Select(x => x[0].ToString()).Aggregate((x, y) => x + y);
+                var allFirstLetters = sequence.Select(x => x[0].ToString()).Aggregate((x, y) => x + y);
             }
 
             {
@@ -112,7 +112,12 @@ namespace ConsoleApplication8
                 //LinqBegin22. Дано целое число K (> 0) и строковая последовательность A.
                 //Строки последовательности содержат только цифры и заглавные буквы латинского алфавита.
                 //Извлечь из A все строки длины K, оканчивающиеся цифрой, отсортировав их по возрастанию.
-                //TODO
+                int k = 3;
+                List<string> sequence = new List<string>() { "Ho1", "ho", "ho", "ha3", "ha,", "ho", "ho2", "ho", "he4", "ha.",
+                                                        "Hello9", "there,", "old", "chum.4", "I’m", "gnot", "an7", "elf.",
+                                                        "I’m", "gnot8", "a", "goblin.", "I’m", "a", "gnome.", "And6", "you’ve", "been,", "GNOMED!" };
+
+                var res = sequence.Where(x => x.Length == k && Char.IsDigit(x[x.Length - 1])).OrderBy(x => (int)x[x.Length - 1]);
             }
 
             {
@@ -120,7 +125,9 @@ namespace ConsoleApplication8
                 //Найти теоретико - множественное объединение двух фрагментов A: первый содержит все элементы до первого элемента, 
                 //большего D(не включая его), а второй — все элементы, начиная с элемента с порядковым номером K.
                 //Полученную последовательность(не содержащую одинаковых элементов) отсортировать по убыванию.
-                //TODO
+                int D = 1, K = 6;
+                IEnumerable<int> n = new int[] { 12, 88, 1, 3, 5, 4, 6, 6, 2, 5, 8, 9, 0, 90 };
+                var res = n.Where(x => x > D).Union(n.Skip(K)).Distinct().OrderByDescending(x => x);
             }
 
             {
@@ -193,16 +200,16 @@ namespace ConsoleApplication8
                     res.Add(listElement);
 
                 }
+            }
 
-                {
-                    //LinqObj17. Исходная последовательность содержит сведения об абитуриентах. Каждый элемент последовательности
-                    //включает следующие поля: < Номер школы > < Год поступления > < Фамилия >
-                    //Для каждого года, присутствующего в исходных данных, вывести число различных школ, которые окончили абитуриенты, 
-                    //поступившие в этом году (вначале указывать число школ, затем год). 
-                    //Сведения о каждом годе выводить на новой строке и упорядочивать по возрастанию числа школ, 
-                    //а для совпадающих чисел — по возрастанию номера года.
-                    //TODO
-                }
+            {
+                //LinqObj17. Исходная последовательность содержит сведения об абитуриентах. Каждый элемент последовательности
+                //включает следующие поля: < Номер школы > < Год поступления > < Фамилия >
+                //Для каждого года, присутствующего в исходных данных, вывести число различных школ, которые окончили абитуриенты, 
+                //поступившие в этом году (вначале указывать число школ, затем год). 
+                //Сведения о каждом годе выводить на новой строке и упорядочивать по возрастанию числа школ, 
+                //а для совпадающих чисел — по возрастанию номера года.
+                //TODO
             }
         }
     }
