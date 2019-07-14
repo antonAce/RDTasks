@@ -10,6 +10,13 @@ namespace RDLinq
         public int Year { get; set; }
     }
 
+    class Student
+    {
+        public string Surname { get; set; }
+        public int AdmissionYear { get; set; }
+        public int SchoolID { get; set; }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -220,8 +227,35 @@ namespace RDLinq
                 //поступившие в этом году (вначале указывать число школ, затем год). 
                 //Сведения о каждом годе выводить на новой строке и упорядочивать по возрастанию числа школ, 
                 //а для совпадающих чисел — по возрастанию номера года.
-                //TODO
+
+                Action<Student> printStudents = (s) => { Console.WriteLine($"Студент {s.Surname} закончил школу №{s.SchoolID} и поступил в {s.AdmissionYear}."); };
+
+                List<Student> students = new List<Student>()
+                {
+                    new Student { Surname = "Кулишенко", AdmissionYear = 2010, SchoolID = 77 },
+                    new Student { Surname = "Мухин", AdmissionYear = 2006, SchoolID = 54 },
+                    new Student { Surname = "Яковлев", AdmissionYear = 2000, SchoolID = 64 },
+                    new Student { Surname = "Семочко", AdmissionYear = 2018, SchoolID = 37 },
+                    new Student { Surname = "Козлов", AdmissionYear = 2006, SchoolID = 108 },
+                    new Student { Surname = "Житар", AdmissionYear = 2000, SchoolID = 118 },
+                    new Student { Surname = "Веселов", AdmissionYear = 2005, SchoolID = 51 },
+                    new Student { Surname = "Кузнецов", AdmissionYear = 2010, SchoolID = 100 },
+                    new Student { Surname = "Коровяк", AdmissionYear = 2010, SchoolID = 52 },
+                    new Student { Surname = "Калашников", AdmissionYear = 2018, SchoolID = 99 },
+                    new Student { Surname = "Афанасьев", AdmissionYear = 2011, SchoolID = 14 },
+                    new Student { Surname = "Желиба", AdmissionYear = 2007, SchoolID = 63 },
+                    new Student { Surname = "Корнейчук", AdmissionYear = 2008, SchoolID = 71 },
+                    new Student { Surname = "Батейко", AdmissionYear = 2001, SchoolID = 26 },
+                    new Student { Surname = "Лебедев", AdmissionYear = 2004, SchoolID = 89 }
+                };
+
+                var res = students.GroupBy(s => s.AdmissionYear).Select(g => new { Schools = g.Count(), Year = g.Key }).OrderBy(s => s.Schools).ThenBy(s => s.Year);
+
+                foreach (var item in res)
+                    Console.WriteLine($"Число школ {item.Schools}, которые окончили абитуриенты, в году {item.Year}");
             }
+
+            Console.ReadKey();
         }
     }
 }
