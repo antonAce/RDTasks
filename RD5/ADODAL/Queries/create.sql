@@ -1,0 +1,37 @@
+CREATE TABLE [ProductCategory]
+(
+	[category_id] INT IDENTITY(1, 1) NOT NULL,
+	[category_name] VARCHAR(250) NOT NULL
+)
+
+ALTER TABLE [ProductCategory] ADD CONSTRAINT [ProductCategoryPK] PRIMARY KEY CLUSTERED ([category_id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+
+
+CREATE TABLE [Vendor]
+(
+	[vendor_id] INT IDENTITY(1, 1) NOT NULL,
+	[vendor_name] VARCHAR(250) NOT NULL,
+	[vendor_address] VARCHAR(250) NULL
+)
+
+ALTER TABLE [Vendor] ADD CONSTRAINT [PK_Vendor] PRIMARY KEY CLUSTERED ([vendor_id] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+
+
+CREATE TABLE [Product]
+(
+	[product_gtin] VARCHAR(14) NOT NULL,
+	[product_name] VARCHAR(250) NOT NULL,
+	[product_description] VARCHAR(1000) NULL,
+	[product_price] MONEY NULL,
+
+	[category_id] INT NOT NULL,
+	[vendor_id] INT NOT NULL
+)
+
+ALTER TABLE [Product] ADD CONSTRAINT [ProductPK] PRIMARY KEY CLUSTERED ([product_gtin] ASC)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+
+ALTER TABLE [Product] ADD CONSTRAINT [ProductVendorFK] FOREIGN KEY ([vendor_id]) REFERENCES [Vendor]([vendor_id]);
+ALTER TABLE [Product] ADD CONSTRAINT [ProductProductCategoryFK] FOREIGN KEY ([category_id]) REFERENCES [ProductCategory]([category_id]);

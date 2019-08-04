@@ -1,0 +1,7 @@
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\bin\Debug\netcoreapp2.1\ADODAL.dll.config
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\bin\Debug\netcoreapp2.1\ADODAL.deps.json
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\bin\Debug\netcoreapp2.1\ADODAL.dll
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\obj\Debug\netcoreapp2.1\ADODAL.csprojAssemblyReference.cache
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\obj\Debug\netcoreapp2.1\ADODAL.csproj.CoreCompileInputs.cache
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\obj\Debug\netcoreapp2.1\ADODAL.AssemblyInfoInputs.cache
+F:\Visual Studio Projects\FromZeroToFullstack\NET CORE\Elementaries\RDTask5\ADODAL\obj\Debug\netcoreapp2.1\ADODAL.AssemblyInfo.cs
