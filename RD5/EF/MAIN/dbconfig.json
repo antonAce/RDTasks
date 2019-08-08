@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "ProductManagerConnection": "Server=DESKTOP-3CU7O3P\\SQLEXPRESS;Database=EFTask5;Trusted_Connection=True;"
+  }
+}
